@@ -50,8 +50,8 @@ def delete_file():
             print("No such file exists")
 
 
-def cd():
-    new = input("Enter dir name: ")
+def cd(path):
+    new = path
     if new == '..':
         return current.parent
     for child in current.children:
@@ -133,10 +133,24 @@ def close():
 
 def thread_function(name):
     text_file = open("sample" + str(name + 1) + ".txt", "r")
-    data = text_file.read()
-    exec(data)
+    lines = text_file.readlines()
+    global current
+    current = root
+    count  = 0
+    for line in lines:
+        count += 1
+
+        # lock.acquire()
+        print(name)
+        temp = eval(line)
+        if temp:
+           current  = temp
+        # lock.release()
+
+    # data = text_file.read()
+    # exec(data)
     text_file.close()
-    print(name)
+
 
 
 if __name__ == "__main__":
@@ -151,6 +165,7 @@ if __name__ == "__main__":
     thread_count = 3
 
     threads = list()
+    lock = threading.Lock()
     for index in range(thread_count):
         x = threading.Thread(target=thread_function, args=(index,))
         threads.append(x)
