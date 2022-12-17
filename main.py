@@ -2,6 +2,7 @@ from anytree import NodeMixin, RenderTree, search
 import jsonpickle
 from textwrap import wrap
 import threading
+import sys
 
 
 class Base(object):
@@ -133,23 +134,26 @@ def close():
 
 def thread_function(name):
     text_file = open("sample" + str(name + 1) + ".txt", "r")
-    lines = text_file.readlines()
-    global current
-    current = root
-    count  = 0
-    for line in lines:
-        count += 1
 
-        # lock.acquire()
-        print(name)
-        temp = eval(line)
-        if temp:
-           current  = temp
-        # lock.release()
+    with open("output" + str(name + 1) + '.txt', 'w+', encoding="utf-8") as f:
+        sys.stdout = f
+        lines = text_file.readlines()
+        global current
+        current = root
+        count = 0
+        for line in lines:
+            count += 1
 
-    # data = text_file.read()
-    # exec(data)
-    text_file.close()
+            # lock.acquire()
+            print(name)
+            temp = eval(line)
+            if temp:
+               current  = temp
+            # lock.release()
+
+        # data = text_file.read()
+        # exec(data)
+        text_file.close()
 
 
 
