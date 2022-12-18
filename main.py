@@ -20,14 +20,12 @@ class TNode(Base, NodeMixin):
             self.children = children
 
 
-def create_file():
-    name = input("Enter file name: ")
+def create_file(name):
     globals()[name] = TNode(name, 1, [], parent=current)
     print("File created")
 
 
-def mkdir():
-    name = input("Enter new directory name: ")
+def mkdir(name):
     globals()[name] = TNode(name, 0, [], parent=current)
     print("Directory created")
 
@@ -40,8 +38,7 @@ def list_dir_contents():
             print(i.name + "   " + "directory")
 
 
-def delete_file():
-    name = input("Enter file name: ")
+def delete_file(name):
     for i in current.children:
         if i.name == name and i.isfile == 1:
             for j in i.blocks:
@@ -82,10 +79,10 @@ def append_to_file():
             free.remove(free[0])
     else:
         print("No file is open")
+    close()
 
 
-def open_file():
-    name = input("File to open: ")
+def open_file(name):
     for child in current.children:
         if name == child.name and child.isfile == 1:
             return child
@@ -108,9 +105,7 @@ def mem_map():
         print(treestr.ljust(8), node.blocks)
 
 
-def move():
-    name = input("File to be moved: ")
-    dirname = input("Directory which the file will be moved to: ")
+def move(name, dirname):
     dir = search.find(root, lambda node: node.name == dirname)
     for i in current.children:
         if i.name == name and dir:
@@ -120,12 +115,11 @@ def move():
         print("File or directory not found")
 
 
-def read():
-    r = input("Read from: ")
+def read(position):
     buffer = ""
     for i in current.blocks:
         buffer += mem[i]
-    return buffer[int(r):]
+    return buffer[int(position):]
 
 
 def close():
