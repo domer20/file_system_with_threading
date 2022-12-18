@@ -1,0 +1,5 @@
+cd("driveE")
+mkdir("ThreadDir")
+cd("ThreadDir")
+create_file("ThreadFile")
+list_dir_contents()

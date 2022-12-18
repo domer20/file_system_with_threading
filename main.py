@@ -20,14 +20,14 @@ class TNode(Base, NodeMixin):
             self.children = children
 
 
-def create_file():
-    name = input("Enter file name: ")
+def create_file(name):
+    # name = input("Enter file name: ")
     globals()[name] = TNode(name, 1, [], parent=current)
     print("File created")
 
 
-def mkdir():
-    name = input("Enter new directory name: ")
+def mkdir(name):
+    # name = input("Enter new directory name: ")
     globals()[name] = TNode(name, 0, [], parent=current)
     print("Directory created")
 
@@ -40,8 +40,8 @@ def list_dir_contents():
             print(i.name + "   " + "directory")
 
 
-def delete_file():
-    name = input("Enter file name: ")
+def delete_file(name):
+    # name = input("Enter file name: ")
     for i in current.children:
         if i.name == name and i.isfile == 1:
             for j in i.blocks:
@@ -108,9 +108,9 @@ def mem_map():
         print(treestr.ljust(8), node.blocks)
 
 
-def move():
-    name = input("File to be moved: ")
-    dirname = input("Directory which the file will be moved to: ")
+def move(name,dirname):
+    # name = input("File to be moved: ")
+    # dirname = input("Directory which the file will be moved to: ")
     dir = search.find(root, lambda node: node.name == dirname)
     for i in current.children:
         if i.name == name and dir:
@@ -141,6 +141,7 @@ def thread_function(name):
         current = root
         count = 0
         for line in lines:
+
             count += 1
             temp = eval(line)
             if temp:
@@ -161,7 +162,7 @@ if __name__ == "__main__":
     while 1 >= thread_count or thread_count >=6:
         thread_count = int(input("Invalid input, enter a number between 1 and 6: "))
     threads = list()
-    lock = threading.Lock()
+    # lock = threading.Lock()
     for index in range(thread_count):
         x = threading.Thread(target=thread_function, args=(index,))
         threads.append(x)
