@@ -21,11 +21,13 @@ class TNode(Base, NodeMixin):
 
 
 def create_file(name):
+    # name = input("Enter file name: ")
     globals()[name] = TNode(name, 1, [], parent=current)
     print("File created")
 
 
 def mkdir(name):
+    # name = input("Enter new directory name: ")
     globals()[name] = TNode(name, 0, [], parent=current)
     print("Directory created")
 
@@ -39,6 +41,7 @@ def list_dir_contents():
 
 
 def delete_file(name):
+    # name = input("Enter file name: ")
     for i in current.children:
         if i.name == name and i.isfile == 1:
             for j in i.blocks:
@@ -79,10 +82,10 @@ def append_to_file():
             free.remove(free[0])
     else:
         print("No file is open")
-    close()
 
 
-def open_file(name):
+def open_file():
+    name = input("File to open: ")
     for child in current.children:
         if name == child.name and child.isfile == 1:
             return child
@@ -105,7 +108,9 @@ def mem_map():
         print(treestr.ljust(8), node.blocks)
 
 
-def move(name, dirname):
+def move(name,dirname):
+    # name = input("File to be moved: ")
+    # dirname = input("Directory which the file will be moved to: ")
     dir = search.find(root, lambda node: node.name == dirname)
     for i in current.children:
         if i.name == name and dir:
@@ -115,11 +120,12 @@ def move(name, dirname):
         print("File or directory not found")
 
 
-def read(position):
+def read():
+    r = input("Read from: ")
     buffer = ""
     for i in current.blocks:
         buffer += mem[i]
-    return buffer[int(position):]
+    return buffer[int(r):]
 
 
 def close():
@@ -135,6 +141,7 @@ def thread_function(name):
         current = root
         count = 0
         for line in lines:
+
             count += 1
             temp = eval(line)
             if temp:
@@ -155,7 +162,7 @@ if __name__ == "__main__":
     while 1 >= thread_count or thread_count >=6:
         thread_count = int(input("Invalid input, enter a number between 1 and 6: "))
     threads = list()
-    lock = threading.Lock()
+    # lock = threading.Lock()
     for index in range(thread_count):
         x = threading.Thread(target=thread_function, args=(index,))
         threads.append(x)

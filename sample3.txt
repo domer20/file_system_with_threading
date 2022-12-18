@@ -1,1 +1,5 @@
-mem_map()
+list_dir_contents()
+cd("driveE")
+move("new","driveD")
+delete_file("dua")
+list_dir_contents()
