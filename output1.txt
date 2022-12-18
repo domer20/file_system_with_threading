@@ -1,0 +1,8 @@
+0
+driveC   directory
+driveD   directory
+driveE   directory
+0
+0
+testing   file
+dua   file

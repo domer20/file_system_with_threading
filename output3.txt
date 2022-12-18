@@ -1,0 +1,10 @@
+2
+root     []
+├── driveC []
+│   ├── test [0]
+│   └── hi []
+├── driveD []
+│   ├── testing []
+│   └── dua [1, 3, 6, 7]
+└── driveE []
+    └── new []
