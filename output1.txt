@@ -1,4 +1,0 @@
-driveC   directory
-driveD   directory
-driveE   directory
-dua   file

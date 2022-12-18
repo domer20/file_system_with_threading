@@ -1,6 +1,24 @@
 driveC   directory
 driveD   directory
 driveE   directory
-File moved
-hi   file
-testing   file
+dua   file
+new   file
+root     []
+├── driveC []
+│   ├── testing []
+│   └── ThreadDir []
+├── driveD []
+│   ├── dua [1, 3, 6, 7]
+│   └── new [4, 5]
+└── driveE []
+    ├── test [0]
+    └── ThreadDir []
+        ├── ThreadFile []
+        └── hi []
+driveC   directory
+driveD   directory
+driveE   directory
+No such file exists
+No such file exists
+test   file
+ThreadDir   directory
