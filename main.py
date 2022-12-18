@@ -134,7 +134,6 @@ def close():
 
 def thread_function(name):
     text_file = open("sample" + str(name + 1) + ".txt", "r")
-
     with open("output" + str(name + 1) + '.txt', 'w+', encoding="utf-8") as f:
         sys.stdout = f
         lines = text_file.readlines()
@@ -143,18 +142,10 @@ def thread_function(name):
         count = 0
         for line in lines:
             count += 1
-
-            # lock.acquire()
-            print(name)
             temp = eval(line)
             if temp:
-               current  = temp
-            # lock.release()
-
-        # data = text_file.read()
-        # exec(data)
+                current = temp
         text_file.close()
-
 
 
 if __name__ == "__main__":
@@ -166,8 +157,9 @@ if __name__ == "__main__":
     # initial settings
     current = root
     cblocks = []
-    thread_count = 3
-
+    thread_count = int(input("Enter the number of threads (between 1 and 6): "))
+    while 1 >= thread_count or thread_count >=6:
+        thread_count = int(input("Invalid input, enter a number between 1 and 6: "))
     threads = list()
     lock = threading.Lock()
     for index in range(thread_count):
