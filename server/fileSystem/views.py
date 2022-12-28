@@ -1,10 +1,11 @@
 import jsonpickle
-from anytree import RenderTree
+from anytree import RenderTree, search
 from django.http import HttpResponse
 from textwrap import wrap
 from fileSystem.apps import root, mem, free
+from fileSystem.models import TNode
 
-
+current = root
 
 def index(request):
     return HttpResponse("Hello, world. Wellcome to Logical File System")
@@ -15,7 +16,7 @@ def index(request):
 def open_file(name):
     for child in current.children:
         if name == child.name and child.isfile == 1:
-            return HttpResponse(child)
+            return HttpResponse(jsonpickle.encode(child))
     else:
         return HttpResponse("No such file")
 def read(position):
@@ -54,11 +55,12 @@ def mkdir(request, name):
     return HttpResponse(f"{name} created")
 
 def list_dir_contents(request):
+    contents = []
     for i in current.children:
-        if i.isfile:
-            return HttpResponse(i.name + "   " + "file")
-        else:
-            return HttpResponse(i.name + "   " + "directory")
+        contents.append((i.name,str(i.isfile)))
+    if len(contents) == 0:
+        return HttpResponse("Directory is empty")
+    return HttpResponse(contents)
 
 def delete_file(request, name):
     for i in current.children:
@@ -73,14 +75,17 @@ def delete_file(request, name):
 
 
 def cd(request, path):
+    global current
     new = path
-    if new == '..':
-        return HttpResponse(current.parent)
+    if new == '..' and current != root:
+        current = current.parent
+        return HttpResponse(current.parent.name)
     for child in current.children:
         if new == child.name and child.isfile == 0:
-            return HttpResponse(child)
+            current = child
+            return HttpResponse(child.name)
     else:
-        return HttpResponse(current)
+        return HttpResponse("Invalid Path")
 
 
 def append_to_file(request, content):

@@ -33,5 +33,3 @@ class FilesystemConfig(AppConfig):
             data = file.read()
             root, mem, free = jsonpickle.loads(data)
             root = from_dict(root)
-
-            print(root)
