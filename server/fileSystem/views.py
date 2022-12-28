@@ -1,44 +1,16 @@
-from django.http import HttpResponse
-from anytree import NodeMixin, RenderTree, search
 import jsonpickle
+from anytree import RenderTree
+from django.http import HttpResponse
 from textwrap import wrap
-import threading
-import sys
-
-# loading data structures from file
-with open('C:\\Users\\MoezAhmad\\Desktop\\file_system_with_threading\\server\\fileSystem\\sys.dat', 'r') as file:
-    root, mem, free = eval(file.read())
-root = jsonpickle.decode(root)
+from fileSystem.apps import root, mem, free
 
 
-# initial settings
-current = root
-
-
-# # saving the memory tree in file
-# json_string = jsonpickle.encode(root)
-# mem_list = [json_string, mem, free]
-# with open('sys.dat', 'w') as file:
-#     file.write(str(mem_list))
 
 def index(request):
     return HttpResponse("Hello, world. Wellcome to Logical File System")
 
 
 
-class Base(object):
-    foo = 4
-
-
-class TNode(Base, NodeMixin):
-    def __init__(self, name, isfile, blocks, parent=None, children=None):
-        super(TNode, self).__init__()
-        self.name = name
-        self.isfile = isfile
-        self.parent = parent
-        self.blocks = blocks
-        if children:
-            self.children = children
 
 def open_file(name):
     for child in current.children:
@@ -142,9 +114,11 @@ def truncate(request):
 
 
 def mem_map(request):
+
     for pre, fill, node in RenderTree(root):
         treestr = u"%s%s" % (pre, node.name)
-        return HttpResponse(treestr.ljust(8), node.blocks)
+        print(treestr.ljust(8), node.blocks)
+    return HttpResponse("root")
 
 
 def move(request, name, dirname):
