@@ -108,11 +108,7 @@ class TNode(Base, NodeMixin):
             return "No such file"
 
     def write_to_file(self, content):
-        print("========================")
-        print(TNode.mem)
-        print("========================")
         ccontent = ""
-        print(self.blocks)
         for i in self.blocks:
 
             ccontent += TNode.mem[i]
@@ -125,9 +121,7 @@ class TNode(Base, NodeMixin):
             self.blocks.append(TNode.free[0])
             TNode.mem[TNode.free[0]] = i
             TNode.free.remove(TNode.free[0])
-        print("========================")
-        print(TNode.mem)
-        print("========================")
+
         return "File appended"
 
     def truncate(self, name):
@@ -154,12 +148,11 @@ class TNode(Base, NodeMixin):
 
     def read(self,name, position):
         position = int(position)
-        print(TNode.mem)
         for i in self.children:
             if i.name == name and i.isfile == 1:
                 buffer = ""
-                for i in self.blocks:
-                    buffer += TNode.mem[i]
+                for j in i.blocks:
+                    buffer += TNode.mem[j]
                 output = buffer[position:]
                 return output
             else:
