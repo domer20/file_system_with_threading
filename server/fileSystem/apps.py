@@ -32,4 +32,6 @@ class FilesystemConfig(AppConfig):
         with open('C:\\Users\\MoezAhmad\\Desktop\\file_system_with_threading\\server\\fileSystem\\sys.dat', 'r') as file:
             data = file.read()
             root, mem, free = jsonpickle.loads(data)
+            print(root["_NodeMixin__children"])
             root = from_dict(root)
+            print(root.children)
