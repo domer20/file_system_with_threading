@@ -1,3 +1,0 @@
-driveC   directory
-driveD   directory
-driveE   directory

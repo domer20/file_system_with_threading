@@ -1,7 +1,0 @@
-driveC   directory
-driveD   directory
-driveE   directory
-root     []
-├── driveC []
-├── driveD []
-└── driveE []

@@ -1,3 +1,0 @@
-Directory created
-File created
-ThreadFile   file

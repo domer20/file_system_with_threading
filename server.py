@@ -3,12 +3,7 @@ import socket
 import threading
 import jsonpickle
 from anytree import RenderTree
-import threading
-
-
-
-from models import free, mem, root, TNode
-from controllers import create_file, mkdir, list_dir_contents, delete_file, cd, append_to_file,  truncate, mem_map, move
+from models import  TNode
 
 # Create a TCP/IP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -21,11 +16,21 @@ sock.bind(server_address)
 # Listen for incoming connections
 sock.listen(1)
 
-# File system variables
+with open("C:\\Users\\MoezAhmad\\Desktop\\finalLab\\sys.dat", "r") as f:
+    data = f.read()
+TNode.root, TNode.mem, TNode.free = jsonpickle.loads(data)
+TNode.root = TNode.from_dict(TNode.root)
+for pre, fill, node in RenderTree(TNode.root):
+    treestr = u"%s%s" % (pre, node.name)
+    print(treestr.ljust(8), node.blocks)
+
+
+# Create a lock
+lock = threading.Lock()
 
 
 def handle_client(connection):
-    current = root
+    current = TNode.root
     message = ""
     try:
 
@@ -36,7 +41,7 @@ def handle_client(connection):
                 break
 
             command, *args = pickle.loads(data)
-            print(command,*args)
+            print(command, *args)
 
             lock.acquire()
             # Execute the command
@@ -53,30 +58,27 @@ def handle_client(connection):
             elif command == 'append_to_file':
                 message = current.append_to_file(*args)
             elif command == 'truncate':
-                message = current.truncate()
+                message = current.truncate(*args)
             elif command == 'mem_map':
-                TNode.mem_map(root)
+                TNode.mem_map(TNode.root)
             elif command == 'move':
                 message = current.move(*args)
+            elif command == 'read':
+                message = current.read(*args)
+            elif command == 'exit':
+                break
+            else:
+                message = "Invalid command"
             lock.release()
             # Serialize the response and send it back to the client
-            response = pickle.dumps((current, message,root))
+            response = pickle.dumps((current, message,TNode.root))
             connection.send(response)
-            break
+
     finally:
         # Clean up the connection
         connection.close()
 
 
-
-with open("C:\\Users\\MoezAhmad\\Desktop\\finalLab\\sys.dat", "r") as f:
-    root, mem, free = jsonpickle.loads(f.read())
-    root = TNode.from_dict(root)
-    for pre, fill, node in RenderTree(root):
-        treestr = u"%s%s" % (pre, node.name)
-        print(treestr.ljust(8), node.blocks)
-# Create a lock
-lock = threading.Lock()
 while True:
     # Wait for a connection
     print('waiting for a connection')
@@ -85,3 +87,4 @@ while True:
     # Start a new thread to handle the client
     client_thread = threading.Thread(target=handle_client, args=(connection,))
     client_thread.start()
+

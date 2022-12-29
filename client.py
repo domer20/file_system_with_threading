@@ -19,9 +19,18 @@ def send_req():
         while True:
             print("============================")
             message = input("Enter Command: ")
-            param = input("Enter Argument: ")
-            sock.send(pickle.dumps((message, param)))
-            data = sock.recv(1024)
+            param = input("Enter name: ")
+            if message == "append_to_file" or message == "move" or message == "read":
+                if message == "append_to_file":
+                    text = input("Enter content: ")
+                elif message == "read":
+                    text = input("Enter position: ")
+                else:
+                    text = input("Enter directory: ")
+                sock.send(pickle.dumps((message, param, text)))
+            else:
+                sock.send(pickle.dumps((message, param)))
+            data = sock.recv(2**20)
             current, message, root = pickle.loads(data)
             print(message)
             print("*******************")
@@ -30,7 +39,6 @@ def send_req():
             for pre, fill, node in RenderTree(root):
                 treestr = u"%s%s" % (pre, node.name)
                 print(treestr.ljust(8), node.blocks)
-            print("============================")
     except Exception as e:
         print(str(e))
         send_req()

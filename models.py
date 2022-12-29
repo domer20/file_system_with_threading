@@ -7,12 +7,11 @@ class Base(object):
     foo = 4
 
 
-free = []
-mem = []
-root = None
-
-
 class TNode(Base, NodeMixin):
+    root = None
+    mem = []
+    free = []
+
     def __init__(self, name, isfile, blocks, parent=None, children=None):
         super(TNode, self).__init__()
         self.name = name
@@ -43,22 +42,20 @@ class TNode(Base, NodeMixin):
             print(treestr.ljust(8), node.blocks)
 
     def create_file(self, name):
-        global current
         # Check if a file with the same name already exists in the current directory
-        if self.name =="root":
+        if self.name == "root":
             return "Cannot Create in root"
         for child in self.children:
-            if child.name == name and child.isfile :
+            if child.name == name and child.isfile:
                 return "File already exists"
 
         # Create a new TNode object with the isfile attribute set to True
         file_node = TNode(name, isfile=True, blocks=[], parent=self)
-        current = self
         return "File created"
 
     def mkdir(self, name):
-        global current
-        if self.name =="root":
+
+        if self.name == "root":
             return "Cannot Create in root"
         # Check if a directory with the same name already exists in the current directory
         for child in self.children:
@@ -67,7 +64,6 @@ class TNode(Base, NodeMixin):
 
         # Create a new TNode object with the isfile attribute set to False
         dir_node = TNode(name, isfile=False, blocks=[], parent=self)
-        current = self
 
         return "Directory created"
 
@@ -83,60 +79,69 @@ class TNode(Base, NodeMixin):
         return dir
 
     def delete_file(self, name):
-        global current
+
         for i in self.children:
             if i.name == name and i.isfile == 1:
                 for j in i.blocks:
-                    free.append(j)
+                    TNode.free.append(j)
                 i.parent = None
                 return "File deleted"
-                current = self
+
             else:
                 return "No such file exists"
 
     def cd(self, path):
-
-        if path == '..':
-            return self.parent
+        if path == '..' and self.parent:
+            return "current changed", self.parent
         for child in self.children:
             if path == child.name and child.isfile == 0:
                 return "current changed", child
+
+        return "No such directory", self
+
+    def append_to_file(self, name, content):
+        for child in self.children:
+            if name == child.name and child.isfile == 1:
+                child.write_to_file(content)
+                return "File appended"
         else:
-            return "No such directory"
+            return "No such file"
 
-    def append_to_file(self, content):
+    def write_to_file(self, content):
+        print("========================")
+        print(TNode.mem)
+        print("========================")
+        ccontent = ""
+        print(self.blocks)
+        for i in self.blocks:
 
-        if self.isfile == 1:
-            ccontent = ""
-            print(self.blocks)
-            for i in self.blocks:
-                print(mem[i])
-                ccontent += mem[i]
-            content = ccontent + content
-            content_blocks = wrap(content, 128)
-            for i in range(len(self.blocks)):
-                mem[i] = content_blocks[i]
-            content_blocks = content_blocks[len(self.blocks):]
-            for i in content_blocks:
-                self.blocks.append(free[0])
-                mem[free[0]] = i
-                free.remove(free[0])
+            ccontent += TNode.mem[i]
+        content = ccontent + content
+        content_blocks = wrap(content, 128)
+        for i in range(len(self.blocks)):
+            TNode.mem[i] = content_blocks[i]
+        content_blocks = content_blocks[len(self.blocks):]
+        for i in content_blocks:
+            self.blocks.append(TNode.free[0])
+            TNode.mem[TNode.free[0]] = i
+            TNode.free.remove(TNode.free[0])
+        print("========================")
+        print(TNode.mem)
+        print("========================")
+        return "File appended"
 
-            return "File appended"
-        else:
-            return "No file is open"
-
-    def truncate(self):
-        if self.isfile == 1:
-            for i in self.blocks:
-                free.append(i)
-
-            return "File truncated"
-        else:
-            return "No file is open"
+    def truncate(self, name):
+        for i in self.children:
+            if i.name == name and i.isfile == 1:
+                for j in i.blocks:
+                    TNode.free.append(j)
+                i.blocks = []
+                return "File truncated"
+            else:
+                return "No such file exists"
 
     def move(self, name, dirname):
-        dir = search.findall(root, lambda node: node.name == dirname)[0]
+        dir = search.findall(TNode.root, lambda node: node.name == dirname)[0]
         for i in self.children:
             if i.name != name or i.isfile == 0:
                 return "No such file exists"
@@ -146,3 +151,17 @@ class TNode(Base, NodeMixin):
 
         if not dir:
             return "Directory not found"
+
+    def read(self,name, position):
+        position = int(position)
+        print(TNode.mem)
+        for i in self.children:
+            if i.name == name and i.isfile == 1:
+                buffer = ""
+                for i in self.blocks:
+                    buffer += TNode.mem[i]
+                output = buffer[position:]
+                return output
+            else:
+                return "No such file exists"
+
