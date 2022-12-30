@@ -16,7 +16,7 @@ sock.bind(server_address)
 # Listen for incoming connections
 sock.listen(1)
 
-with open("C:\\Users\\MoezAhmad\\Desktop\\finalLab\\sys.dat", "r") as f:
+with open("C:\\Users\\MoezAhmad\\Desktop\\New folder\\file_system_with_threading\\sys.dat", "r") as f:
     data = f.read()
 TNode.root, TNode.mem, TNode.free = jsonpickle.loads(data)
 TNode.root = TNode.from_dict(TNode.root)
@@ -66,6 +66,8 @@ def handle_client(connection):
             elif command == 'read':
                 message = current.read(*args)
             elif command == 'exit':
+                message = "Bye"
+                lock.release()
                 break
             else:
                 message = "Invalid command"
@@ -73,6 +75,8 @@ def handle_client(connection):
             # Serialize the response and send it back to the client
             response = pickle.dumps((current, message,TNode.root))
             connection.send(response)
+        response = pickle.dumps((current, message, TNode.root))
+        connection.send(response)
 
     finally:
         # Clean up the connection

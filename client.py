@@ -39,6 +39,8 @@ def send_req():
             for pre, fill, node in RenderTree(root):
                 treestr = u"%s%s" % (pre, node.name)
                 print(treestr.ljust(8), node.blocks)
+            if message == "Bye":
+                break
     except Exception as e:
         print(str(e))
         send_req()
