@@ -1,6 +1,0 @@
-list_dir_contents()
-cd("driveC")
-mkdir("ThreadDir")
-move("hi","ThreadDir")
-delete_file("hi")
-list_dir_contents()

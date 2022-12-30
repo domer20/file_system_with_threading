@@ -1,8 +1,0 @@
-driveC   directory
-driveD   directory
-driveE   directory
-Directory already exists
-No such file exists
-No such file exists
-testing   file
-ThreadDir   directory

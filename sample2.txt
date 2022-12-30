@@ -1,4 +1,0 @@
-list_dir_contents()
-cd("driveC")
-move("test","driveE")
-list_dir_contents()
